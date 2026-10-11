@@ -1,0 +1,176 @@
+<!-- ======================================================================
+     VX Liquid Metal Hero — paste into a GoHighLevel "Code" element.
+     Requires ghl/hero.css in the site's Custom CSS panel.
+     Edit the text and the two href="#" links below.
+     ====================================================================== -->
+<section class="vx-hero" aria-label="Hero">
+  <div class="vx-hero-bg" aria-hidden="true"></div>
+
+  <div class="vx-hero-container">
+    <div class="vx-hero-badge-row">
+      <span class="vx-hero-badge">✨ Next Generation UI</span>
+    </div>
+
+    <div class="vx-hero-text">
+      <h1 class="vx-hero-title">Fluid Design Excellence</h1>
+      <p class="vx-hero-subtitle">
+        Experience the future of web interfaces with liquid metal aesthetics that adapt, flow, and
+        captivate. Built for modern applications that demand both beauty and performance.
+      </p>
+    </div>
+
+    <div class="vx-hero-actions">
+      <a class="vx-hero-btn vx-hero-btn-primary" href="#">Start Building</a>
+      <a class="vx-hero-btn vx-hero-btn-secondary" href="#">View Examples</a>
+    </div>
+
+    <div class="vx-hero-features">
+      <div class="vx-hero-card">
+        <div class="vx-hero-feature-grid">
+          <div class="vx-hero-feature"><p>Seamless Animations</p></div>
+          <div class="vx-hero-feature"><p>Responsive Excellence</p></div>
+          <div class="vx-hero-feature"><p>Modern Architecture</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* Show the silver loading state right away; drop back to the dark
+     metal fallback if the shader hasn't started within 8 seconds. */
+  (function () {
+    document.querySelectorAll(".vx-hero:not(.vx-hero-is-live)").forEach(function (hero) {
+      hero.classList.add("vx-hero-is-loading");
+      setTimeout(function () {
+        if (!hero.classList.contains("vx-hero-is-live")) hero.classList.remove("vx-hero-is-loading");
+      }, 8000);
+    });
+  })();
+</script>
+
+<script type="module">
+  // Vanilla @paper-design/shaders (same version the React hero used).
+  const CDN_URLS = [
+    "https://cdn.jsdelivr.net/npm/@paper-design/shaders@0.0.81/+esm",
+    "https://esm.sh/@paper-design/shaders@0.0.81",
+  ];
+
+  // liquidMetalPresets[2] — "Backdrop"
+  const BACKDROP = {
+    speed: 1,
+    frame: 0,
+    colorBack: "#AAAAAC",
+    colorTint: "#ffffff",
+    softness: 0.05,
+    repetition: 1.5,
+    shiftRed: 0.3,
+    shiftBlue: 0.3,
+    distortion: 0.1,
+    contour: 0.4,
+    shape: "none",
+    angle: 90,
+    fit: "contain",
+    scale: 1,
+    rotation: 0,
+    offsetX: 0,
+    offsetY: 0,
+    originX: 0.5,
+    originY: 0.5,
+    worldWidth: 0,
+    worldHeight: 0,
+  };
+
+  const TRANSPARENT_PIXEL = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+
+  async function loadShaders() {
+    for (const url of CDN_URLS) {
+      try {
+        return await import(url);
+      } catch (err) {
+        console.warn("[vx-hero] Could not load shaders from " + url, err);
+      }
+    }
+    throw new Error("All shader CDNs failed");
+  }
+
+  async function loadBlankImage() {
+    const img = new Image();
+    img.src = TRANSPARENT_PIXEL;
+    await img.decode();
+    img.width = 1024;
+    img.height = 1024;
+    return img;
+  }
+
+  function fallback(hero) {
+    hero.classList.remove("vx-hero-is-loading", "vx-hero-is-live");
+  }
+
+  const heroes = [...document.querySelectorAll(".vx-hero:not([data-vx-hero-init])")];
+  heroes.forEach((hero) => hero.setAttribute("data-vx-hero-init", ""));
+
+  if (heroes.length) {
+    try {
+      const {
+        ShaderMount,
+        liquidMetalFragmentShader,
+        LiquidMetalShapes,
+        ShaderFitOptions,
+        getShaderColorFromString,
+      } = await loadShaders();
+      const blank = await loadBlankImage();
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const p = BACKDROP;
+
+      for (const hero of heroes) {
+        const mount = hero.querySelector(".vx-hero-bg");
+        if (!mount) continue;
+        try {
+          new ShaderMount(
+            mount,
+            liquidMetalFragmentShader,
+            {
+              u_colorBack: getShaderColorFromString(p.colorBack),
+              u_colorTint: getShaderColorFromString(p.colorTint),
+              u_image: blank,
+              u_contour: p.contour,
+              u_distortion: p.distortion,
+              u_softness: p.softness,
+              u_repetition: p.repetition,
+              u_shiftRed: p.shiftRed,
+              u_shiftBlue: p.shiftBlue,
+              u_angle: p.angle,
+              u_isImage: false,
+              u_shape: LiquidMetalShapes[p.shape],
+              u_fit: ShaderFitOptions[p.fit],
+              u_scale: p.scale,
+              u_rotation: p.rotation,
+              u_offsetX: p.offsetX,
+              u_offsetY: p.offsetY,
+              u_originX: p.originX,
+              u_originY: p.originY,
+              u_worldWidth: p.worldWidth,
+              u_worldHeight: p.worldHeight,
+            },
+            undefined,
+            reduceMotion ? 0 : p.speed,
+            p.frame,
+            2,
+            undefined,
+            ["u_image"]
+          );
+          hero.classList.add("vx-hero-is-live");
+          hero.classList.remove("vx-hero-is-loading");
+        } catch (err) {
+          // e.g. WebGL2 not available
+          console.warn("[vx-hero] Shader failed, using CSS fallback", err);
+          fallback(hero);
+        }
+      }
+    } catch (err) {
+      console.warn("[vx-hero] Shader failed to load, using CSS fallback", err);
+      heroes.forEach(fallback);
+    }
+  }
+</script>

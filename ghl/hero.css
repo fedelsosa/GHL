@@ -1,0 +1,359 @@
+/* ==========================================================================
+   VX Liquid Metal Hero — paste into GoHighLevel > Settings > Custom CSS
+   Every class is prefixed "vx-hero-" to avoid clashing with GHL styles.
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap");
+
+/* ---------- Theme ---------------------------------------------------------
+   Default (no JS / shader failed): light text on dark metal gradient.
+   .vx-hero-is-loading / .vx-hero-is-live: dark text on silver liquid metal. */
+.vx-hero {
+  --vx-hero-fg: 245 245 245;          /* text colour (RGB triplet) */
+  --vx-hero-bg: 10 10 10;             /* primary button text colour */
+  --vx-hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 4rem 0;
+  box-sizing: border-box;
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: rgb(var(--vx-hero-fg));
+  transition: color 0.6s ease;
+
+  /* Dark metallic fallback */
+  background-color: #0d0e11;
+  background-image:
+    radial-gradient(ellipse 60% 45% at 18% 12%, rgba(255, 255, 255, 0.16), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 85% 85%, rgba(150, 165, 190, 0.18), transparent 70%),
+    linear-gradient(125deg, #0b0c0f 0%, #2b2e34 20%, #61666f 34%, #1b1d21 50%, #40444c 66%, #8a9099 76%, #1a1c20 88%, #0b0c0f 100%);
+}
+
+.vx-hero.vx-hero-is-loading,
+.vx-hero.vx-hero-is-live {
+  --vx-hero-fg: 10 10 10;
+  --vx-hero-bg: 255 255 255;
+}
+
+.vx-hero *,
+.vx-hero *::before,
+.vx-hero *::after {
+  box-sizing: border-box;
+}
+
+/* Moving sheen across the dark fallback */
+.vx-hero::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: -2;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.09) 50%, transparent 60%);
+  animation: vx-hero-sheen 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ---------- Shader layer (absolute, only behind the hero) ---------------- */
+.vx-hero .vx-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  /* Silver base matching the shader's colorBack while it loads */
+  background: radial-gradient(ellipse at 30% 20%, #f4f4f6 0%, #c9c9cd 45%, #aaaaac 100%);
+}
+
+.vx-hero.vx-hero-is-loading .vx-hero-bg,
+.vx-hero.vx-hero-is-live .vx-hero-bg {
+  opacity: 1;
+}
+
+.vx-hero .vx-hero-bg canvas {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.vx-hero.vx-hero-is-live .vx-hero-bg canvas {
+  opacity: 1;
+}
+
+/* ---------- Layout -------------------------------------------------------- */
+.vx-hero .vx-hero-container {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.vx-hero .vx-hero-badge-row,
+.vx-hero .vx-hero-text,
+.vx-hero .vx-hero-actions {
+  margin: 0 0 2rem;
+}
+
+/* ---------- Badge --------------------------------------------------------- */
+.vx-hero .vx-hero-badge-row {
+  display: flex;
+  justify-content: center;
+}
+
+.vx-hero .vx-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid rgb(var(--vx-hero-fg) / 0.2);
+  border-radius: 9999px;
+  background: rgb(var(--vx-hero-fg) / 0.1);
+  color: rgb(var(--vx-hero-fg));
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.3s ease, color 0.6s ease, border-color 0.6s ease;
+}
+
+.vx-hero .vx-hero-badge:hover {
+  background: rgb(var(--vx-hero-fg) / 0.2);
+}
+
+/* ---------- Heading + subtitle ------------------------------------------- */
+.vx-hero .vx-hero-title {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  color: rgb(var(--vx-hero-fg));
+  font-family: inherit;
+  font-size: 3rem;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  transition: color 0.6s ease;
+}
+
+.vx-hero .vx-hero-subtitle {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0;
+  color: rgb(var(--vx-hero-fg) / 0.9);
+  font-family: inherit;
+  font-size: 1.25rem;
+  line-height: 1.625;
+  font-weight: 400;
+  transition: color 0.6s ease;
+}
+
+/* ---------- Buttons (plain <a> links) ------------------------------------ */
+.vx-hero .vx-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.vx-hero a.vx-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.75rem 2rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s var(--vx-hero-ease), background-color 0.3s ease,
+    border-color 0.3s ease, color 0.6s ease;
+}
+
+.vx-hero a.vx-hero-btn:hover {
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+.vx-hero a.vx-hero-btn:active {
+  transform: scale(0.95);
+}
+
+.vx-hero a.vx-hero-btn:focus-visible {
+  outline: 2px solid rgb(var(--vx-hero-fg) / 0.6);
+  outline-offset: 3px;
+}
+
+.vx-hero a.vx-hero-btn-primary {
+  background: rgb(var(--vx-hero-fg));
+  color: rgb(var(--vx-hero-bg));
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.vx-hero a.vx-hero-btn-primary:hover {
+  background: rgb(var(--vx-hero-fg) / 0.9);
+  color: rgb(var(--vx-hero-bg));
+}
+
+.vx-hero a.vx-hero-btn-secondary {
+  background: rgb(var(--vx-hero-bg));
+  border-color: rgb(var(--vx-hero-fg) / 0.3);
+  color: rgb(var(--vx-hero-fg));
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.vx-hero a.vx-hero-btn-secondary:hover {
+  background: rgb(var(--vx-hero-fg) / 0.1);
+  border-color: rgb(var(--vx-hero-fg) / 0.5);
+  color: rgb(var(--vx-hero-fg));
+}
+
+/* ---------- Features card ------------------------------------------------- */
+.vx-hero .vx-hero-features {
+  padding-top: 3rem;
+}
+
+.vx-hero .vx-hero-card {
+  border: 1px solid rgb(var(--vx-hero-fg) / 0.2);
+  border-radius: 0.625rem;
+  background: rgb(var(--vx-hero-fg) / 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 2rem;
+  transition: transform 0.3s var(--vx-hero-ease), border-color 0.6s ease, background-color 0.6s ease;
+}
+
+.vx-hero .vx-hero-card:hover {
+  transform: translateY(-4px);
+}
+
+.vx-hero .vx-hero-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.vx-hero .vx-hero-feature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.vx-hero .vx-hero-feature p {
+  margin: 0;
+  color: rgb(var(--vx-hero-fg) / 0.9);
+  font-family: inherit;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 500;
+  transition: color 0.6s ease;
+}
+
+/* ---------- Entrance animations (replace framer-motion) ------------------ */
+@keyframes vx-hero-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vx-hero-rise {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes vx-hero-pop {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes vx-hero-slide {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes vx-hero-sheen {
+  0%, 100% { transform: translateX(-20%); }
+  50% { transform: translateX(20%); }
+}
+
+.vx-hero .vx-hero-container {
+  animation: vx-hero-fade 0.8s ease both;
+}
+
+.vx-hero .vx-hero-badge-row {
+  animation: vx-hero-rise 0.8s var(--vx-hero-ease) 0.2s both;
+}
+
+.vx-hero .vx-hero-text {
+  animation: vx-hero-rise 0.8s var(--vx-hero-ease) 0.35s both;
+}
+
+.vx-hero .vx-hero-actions {
+  animation: vx-hero-pop 0.8s var(--vx-hero-ease) 0.5s both;
+}
+
+.vx-hero .vx-hero-features {
+  animation: vx-hero-rise 0.8s var(--vx-hero-ease) 0.65s both;
+}
+
+.vx-hero .vx-hero-feature {
+  animation: vx-hero-slide 0.6s var(--vx-hero-ease) 0.8s both;
+}
+
+.vx-hero .vx-hero-feature:nth-child(2) { animation-delay: 0.9s; }
+.vx-hero .vx-hero-feature:nth-child(3) { animation-delay: 1s; }
+.vx-hero .vx-hero-feature:nth-child(4) { animation-delay: 1.1s; }
+.vx-hero .vx-hero-feature:nth-child(5) { animation-delay: 1.2s; }
+.vx-hero .vx-hero-feature:nth-child(6) { animation-delay: 1.3s; }
+
+/* ---------- Responsive ---------------------------------------------------- */
+@media (min-width: 640px) {
+  .vx-hero .vx-hero-title { font-size: 3.75rem; }
+  .vx-hero .vx-hero-subtitle { font-size: 1.5rem; }
+  .vx-hero .vx-hero-actions { flex-direction: row; }
+}
+
+@media (min-width: 768px) {
+  .vx-hero .vx-hero-feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .vx-hero .vx-hero-container { padding: 0 2rem; }
+  .vx-hero .vx-hero-title { font-size: 4.5rem; }
+}
+
+@media (min-width: 1280px) {
+  .vx-hero .vx-hero-title { font-size: 6rem; }
+}
+
+/* Mobile: natural height with padding instead of a full-screen hero */
+@media (max-width: 767px) {
+  .vx-hero {
+    min-height: 0;
+    padding: 6rem 0 4.5rem;
+  }
+}
+
+/* ---------- Reduced motion ------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .vx-hero *,
+  .vx-hero::before {
+    animation: none !important;
+    transition: none !important;
+  }
+  .vx-hero a.vx-hero-btn:hover,
+  .vx-hero a.vx-hero-btn:active,
+  .vx-hero .vx-hero-card:hover {
+    transform: none;
+  }
+}
